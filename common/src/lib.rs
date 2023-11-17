@@ -40,20 +40,31 @@ pub fn draw_clear(buf: &mut [u32], dim: &PhysicalSize<u32>, col: &ColorRGB) {
     for y in 0..dim.height {
         for x in 0..dim.width {
             let index = y as usize * dim.width as usize + x as usize;
-            buf[index] = (col.2 as u32) | ((col.1 as u32) << 8) | ((col.0 as u32) << 16);
+            buf[index] =
+                (col.2 as u32) | ((col.1 as u32) << 8) | ((col.0 as u32) << 16);
         }
     }
 }
 
 /// Draws a pixel of a specified color into the buffer
-pub fn draw_pixel(buf: &mut [u32], dim: &PhysicalSize<u32>, pos: &Point2D, col: &ColorRGB) {
-    if pos.0 >= dim.width as i32 || pos.1 >= dim.height as i32 || pos.0 < 0 || pos.1 < 0 {
+pub fn draw_pixel(
+    buf: &mut [u32],
+    dim: &PhysicalSize<u32>,
+    pos: &Point2D,
+    col: &ColorRGB,
+) {
+    if pos.0 >= dim.width as i32
+        || pos.1 >= dim.height as i32
+        || pos.0 < 0
+        || pos.1 < 0
+    {
         return;
     }
 
     // Color is stored as (B | G << 8 | R << 16)
     buf[(pos.1 * dim.width as i32 + pos.0) as usize] =
-        ((col.2 as u32) | ((col.1 as u32) << 8) | ((col.0 as u32) << 16)) as u32;
+        ((col.2 as u32) | ((col.1 as u32) << 8) | ((col.0 as u32) << 16))
+            as u32;
 }
 
 /// Bresenham's line algorithm with variable tilt
@@ -139,13 +150,23 @@ pub fn draw_line(
 }
 
 /// Draw origin point
-pub fn draw_origin(buf: &mut [u32], dim: &PhysicalSize<u32>, org: &Point2D, col: &ColorRGB) {
+pub fn draw_origin(
+    buf: &mut [u32],
+    dim: &PhysicalSize<u32>,
+    org: &Point2D,
+    col: &ColorRGB,
+) {
     draw_line(buf, dim, &(org.0, 0), &(org.0, dim.height as i32 - 1), col);
     draw_line(buf, dim, &(0, org.1), &(dim.width as i32 - 1, org.1), col);
 }
 
 /// Draw a line between all given points and connect the ends
-pub fn draw_polygon(buf: &mut [u32], dim: &PhysicalSize<u32>, poly: &[Point2D], col: &ColorRGB) {
+pub fn draw_polygon(
+    buf: &mut [u32],
+    dim: &PhysicalSize<u32>,
+    poly: &[Point2D],
+    col: &ColorRGB,
+) {
     let len: usize = poly.len();
     for i in 0..len - 1 {
         draw_line(buf, dim, &poly[i], &poly[i + 1], col);
@@ -154,7 +175,12 @@ pub fn draw_polygon(buf: &mut [u32], dim: &PhysicalSize<u32>, poly: &[Point2D], 
 }
 
 /// Draw a line between all given points
-pub fn draw_connect(buf: &mut [u32], dim: &PhysicalSize<u32>, pts: &[Point2D], col: &ColorRGB) {
+pub fn draw_connect(
+    buf: &mut [u32],
+    dim: &PhysicalSize<u32>,
+    pts: &[Point2D],
+    col: &ColorRGB,
+) {
     let len: usize = pts.len();
     for i in 0..len - 1 {
         draw_line(buf, dim, &pts[i], &pts[i + 1], col);

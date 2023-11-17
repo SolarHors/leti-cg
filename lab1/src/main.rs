@@ -22,7 +22,9 @@ fn scale_polygon(poly: &mut [Point2D], sfx: i32, sfy: i32) {
 }
 
 fn main() {
-    println!("Use mouse wheel to change scale.\nLeft click to set object's origin.\n");
+    println!(
+        "Use mouse wheel to change scale.\nLeft click to set object's origin.\n"
+    );
 
     // Origin point for the 2D shape
     let mut origin: Point2D = (25, 25);
@@ -90,7 +92,9 @@ fn main() {
                 window_id,
             } if window_id == window.id() => {
                 // Update the origin point
-                if state == ElementState::Released && button == MouseButton::Left {
+                if state == ElementState::Released
+                    && button == MouseButton::Left
+                {
                     origin = (cursor_pos.0, cursor_pos.1);
                     println!("Origin point updated: {:?}", origin);
                     window.request_redraw();
