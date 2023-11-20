@@ -1,6 +1,8 @@
 //! Общие ресурсы для лабораторных работ
 //! Группа 0323
 
+// TODO: Do input-checking (empty arrays, etc).
+
 use winit::dpi::PhysicalSize;
 
 pub type Point2D = (i32, i32);
@@ -149,7 +151,7 @@ pub fn draw_line(
     }
 }
 
-/// Draw origin point
+/// Draw coordinate axes from given point
 pub fn draw_origin(
     buf: &mut [u32],
     dim: &PhysicalSize<u32>,
@@ -158,6 +160,44 @@ pub fn draw_origin(
 ) {
     draw_line(buf, dim, &(org.0, 0), &(org.0, dim.height as i32 - 1), col);
     draw_line(buf, dim, &(0, org.1), &(dim.width as i32 - 1, org.1), col);
+}
+
+/// Bresenham's algorithm for circle generation
+pub fn draw_circle(
+    buf: &mut [u32],
+    dim: &PhysicalSize<u32>,
+    org: &Point2D,
+    rad: i32,
+    col: &ColorRGB,
+) {
+    if rad < 2 {
+        draw_pixel(buf, dim, org, col);
+        return;
+    }
+
+    let mut x: i32 = 0;
+    let mut y: i32 = rad;
+    let mut d: i32 = 3 - 2 * rad;
+
+    while x <= y {
+        draw_pixel(buf, dim, &(org.0 + x, org.1 + y), col);
+        draw_pixel(buf, dim, &(org.0 - x, org.1 + y), col);
+        draw_pixel(buf, dim, &(org.0 + x, org.1 - y), col);
+        draw_pixel(buf, dim, &(org.0 - x, org.1 - y), col);
+        draw_pixel(buf, dim, &(org.0 + y, org.1 + x), col);
+        draw_pixel(buf, dim, &(org.0 - y, org.1 + x), col);
+        draw_pixel(buf, dim, &(org.0 + y, org.1 - x), col);
+        draw_pixel(buf, dim, &(org.0 - y, org.1 - x), col);
+
+        x += 1;
+
+        if d > 0 {
+            y -= 1;
+            d += 4 * (x - y) + 10;
+        } else {
+            d += 4 * x + 6;
+        }
+    }
 }
 
 /// Draw a line between all given points and connect the ends

@@ -2,5 +2,6 @@
 members = [
     "common",
     "lab1",
+    "lab2",
 ]
 
