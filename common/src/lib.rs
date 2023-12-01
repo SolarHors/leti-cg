@@ -208,6 +208,11 @@ pub fn draw_polygon(
     col: &ColorRGB,
 ) {
     let len: usize = poly.len();
+
+    if len < 2 {
+        return;
+    }
+
     for i in 0..len - 1 {
         draw_line(buf, dim, &poly[i], &poly[i + 1], col);
     }
@@ -222,7 +227,68 @@ pub fn draw_connect(
     col: &ColorRGB,
 ) {
     let len: usize = pts.len();
+
+    if len < 2 {
+        return;
+    }
+
     for i in 0..len - 1 {
         draw_line(buf, dim, &pts[i], &pts[i + 1], col);
     }
+}
+
+/// Draws circles around points
+pub fn draw_points(
+    buf: &mut [u32],
+    dim: &PhysicalSize<u32>,
+    pts: &Vec<Point2D>,
+    col: &ColorRGB,
+) {
+    for p in pts {
+        draw_circle(buf, dim, p, 4, col);
+    }
+}
+
+/// Applies De Casteljau's algorithm in order to return a point
+/// on the Bézier curve at a given position
+/// * `pts` - points describing the curve
+/// * `pos` - position on the curve, must be between 0 and 1
+pub fn de_casteljau(pts: &Vec<Point2D>, pos: f32) -> Point2D {
+    let n: usize = pts.len();
+    let mut points: Vec<Point2D> = pts.clone();
+
+    for r in 1..n {
+        for i in 0..(n - r) {
+            let this: Point2D = points[i];
+            let next: Point2D = points[i + 1];
+
+            // Interpolate point
+            points[i] = (
+                ((1.0 - pos) * this.0 as f32 + pos * next.0 as f32) as i32,
+                ((1.0 - pos) * this.1 as f32 + pos * next.1 as f32) as i32,
+            );
+        }
+    }
+
+    points[0]
+}
+
+/// Returns the points of a Bézier curve with given precision
+/// * `pts` - points describing the curve
+/// * `prc` - precision, must be greater than 1
+pub fn get_bezier_points(pts: &Vec<Point2D>, prc: u32) -> Vec<Point2D> {
+    if pts.len() < 3 || prc < 1 {
+        return Vec::new();
+    }
+
+    let mut midpoints: Vec<Point2D> = Vec::new();
+
+    // Iterate from 0.0 to 1.0 with prc as step
+    for i in 0..prc + 1 {
+        // This gets exact floats
+        let pos: f32 = (i as f32) / prc as f32;
+        midpoints.push(de_casteljau(pts, pos));
+    }
+
+    midpoints
 }
