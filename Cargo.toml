@@ -1,7 +1,9 @@
 [workspace]
+resolver = "1"
 members = [
     "common",
     "lab1",
     "lab2",
+    "lab3",
 ]
 

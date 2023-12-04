@@ -2,10 +2,14 @@
 //! Группа 0323
 
 // TODO: Do input-checking (empty arrays, etc).
+// TODO: Really should use floats everywhere instead.
+// TODO: Divide into 2D and 3D modules?
+// TODO: Modify functions to work with Option<> types.
 
 use winit::dpi::PhysicalSize;
 
 pub type Point2D = (i32, i32);
+pub type Point3D = (i32, i32, i32);
 pub type ColorRGB = (u8, u8, u8);
 
 pub const BLACK: ColorRGB = (0x00, 0x00, 0x00);
@@ -247,6 +251,25 @@ pub fn draw_points(
     for p in pts {
         draw_circle(buf, dim, p, 4, col);
     }
+}
+
+/// Linearly interpolate between two values
+pub fn lerp(start: i32, end: i32, pos: f32) -> i32 {
+    (start as f32 + (end as f32 - start as f32) * pos) as i32
+}
+
+/// Linearly interpolate between two 2D points
+pub fn lerp_2d(start: Point2D, end: Point2D, pos: f32) -> Point2D {
+    (lerp(start.0, end.0, pos), lerp(start.1, end.1, pos))
+}
+
+/// Linearly interpolate between two 3D points
+pub fn lerp_3d(start: Point3D, end: Point3D, pos: f32) -> Point3D {
+    (
+        lerp(start.0, end.0, pos),
+        lerp(start.1, end.1, pos),
+        lerp(start.2, end.2, pos),
+    )
 }
 
 /// Applies De Casteljau's algorithm in order to return a point
