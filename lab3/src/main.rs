@@ -5,7 +5,7 @@
 use common::*;
 use nalgebra::*;
 // use raqote::*;
-use softbuffer::{Buffer, Context, Surface};
+use softbuffer::{Context, Surface};
 use std::num::NonZeroU32;
 use winit::{
     dpi::{LogicalSize, PhysicalSize},
@@ -96,8 +96,8 @@ fn get_projected_points(
 
     for pt in pts {
         // Apply rotation along all axes
-        let mut rotated = rot_y * pt;
-        rotated = rot_x * rotated;
+        let mut rotated = rot_x * pt;
+        rotated = rot_y * rotated;
         rotated = rot_z * rotated;
 
         // Project points
@@ -124,12 +124,22 @@ fn make_bilinear_surface(pts: &Vec<Vector2<f32>>) -> Matrix6<Vector2<f32>> {
             let u: f32 = j as f32 * 0.2;
 
             // Apply bilinear surface equation
-            let point = pts[0] * ((1. - u) * (1. - w))
-                + pts[1] * ((1. - u) * w)
-                + pts[2] * (u * (1. - w))
-                + pts[3] * (u * w);
+            // (for surfaces described by four points)
+            // let surf = pts[0] * ((1. - u) * (1. - w))
+            //     + pts[1] * ((1. - u) * w)
+            //     + pts[2] * (u * (1. - w))
+            //     + pts[3] * (u * w);
 
-            result[(i, j)] = point;
+            // Apply bilinear surface equation
+            // (for surfaces described by two line segments)
+            let line1: Point2<f32> =
+                Point2::from(pts[0]).lerp(&Point2::from(pts[1]), u);
+            let line2: Point2<f32> =
+                Point2::from(pts[2]).lerp(&Point2::from(pts[3]), u);
+            let surf: Vector2<f32> = Vector2::new(line1.x, line1.y) * (1. - w)
+                + Vector2::new(line2.x, line2.y) * w;
+
+            result[(i, j)] = surf;
         }
     }
 
