@@ -16,8 +16,10 @@ pub const BLACK: ColorRGB = (0x00, 0x00, 0x00);
 pub const GRAY: ColorRGB = (0xde, 0xdd, 0xda);
 pub const WHITE: ColorRGB = (0xff, 0xff, 0xff);
 pub const RED: ColorRGB = (0xe0, 0x1b, 0x24);
-pub const GREEN: ColorRGB = (0x2e, 0xc2, 0x7e);
+pub const GREEN: ColorRGB = (0x33, 0xd1, 0x7a);
 pub const BLUE: ColorRGB = (0x35, 0x84, 0xe4);
+pub const ORANGE: ColorRGB = (0xff, 0x78, 0x00);
+pub const PURPLE: ColorRGB = (0x91, 0x41, 0xac);
 
 // /// Moves data from raqote::DrawTarget into softbuffer::Surface
 // pub fn draw_to_buffer(dt: &DrawTarget, buffer: &mut [u32], width: usize, height: usize) {

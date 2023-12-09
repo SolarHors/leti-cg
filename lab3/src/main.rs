@@ -4,7 +4,6 @@
 
 use common::*;
 use nalgebra::*;
-// use raqote::*;
 use softbuffer::{Context, Surface};
 use std::num::NonZeroU32;
 use winit::{
@@ -23,34 +22,6 @@ enum ModifiedAxis {
     Y,
     Z,
 }
-
-// /// Moves data from raqote::DrawTarget into softbuffer::Surface
-// pub fn draw_to_buffer(
-//     dt: &DrawTarget,
-//     buffer: &mut Buffer,
-//     width: usize,
-//     height: usize,
-// ) {
-//     // Pixel data of DrawTarget is presented as:
-//     // (A << 24) | (R << 16) | (G << 8) | B
-//     let data = dt.get_data();
-
-//     for y in 0..height {
-//         for x in 0..width {
-//             let pos: usize = y * width + x;
-
-//             let value: u32 = {
-//                 let red: u8 = (data[pos] >> 16) as u8;
-//                 let green: u8 = (data[pos] >> 8) as u8;
-//                 let blue: u8 = (data[pos] >> 0) as u8;
-//                 ((blue as u32) | ((green as u32) << 8) | ((red as u32) << 16))
-//                     as u32
-//             };
-
-//             buffer[pos] = value;
-//         }
-//     }
-// }
 
 fn get_xyz_rotation_matrices(
     angle_x: f32,
@@ -239,8 +210,6 @@ fn main() {
                     .unwrap();
 
                 let mut buffer = surface.buffer_mut().unwrap();
-                // let mut draw =
-                //     DrawTarget::new(size.width as i32, size.height as i32);
 
                 // Get rotation matrices
                 let (rot_x, rot_y, rot_z) = get_xyz_rotation_matrices(
@@ -270,13 +239,7 @@ fn main() {
                 if converted_proj_pts.len() == 4 {
                     let surf_fill_points =
                         make_bilinear_surface(&surf_proj_points);
-                    // draw_line(
-                    //     &mut buffer,
-                    //     &size,
-                    //     &converted_proj_pts[2],
-                    //     &converted_proj_pts[3],
-                    //     &BLACK,
-                    // );
+
                     draw_bilinear_surface(
                         &mut buffer,
                         &size,
@@ -410,7 +373,6 @@ fn main() {
                             }
                         }
                     }
-                    // println!("Angle changed {:?}", surf_rot);
                     window.request_redraw();
                 }
             }
@@ -427,22 +389,3 @@ fn main() {
         }
     });
 }
-
-/*
-NOTE: Ideas on implementation:
-
-User defines two boundary curves in 2d.
-One of the curves is offset on the Z axis.
-They get connected, making a surface.
-To make a grid, use De Casteljau's algorithm for curves
-or lerp for lines in order to evenly divide boundaries
-into points to draw half of the grid, next do the same
-for the lines that connect the corners to draw the other
-half of the grid.
-To have a smooth transition between grid curves
-lerp between the lowest and highest points (flatten
-the z axis).
-
-How to project 3D stuff?
-How to rotate the surface?
-*/
