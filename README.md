@@ -39,7 +39,7 @@
 Сформировать билинейную поверхность на основе произвольного задания ее
 четерех угловых точек. Обеспечить ее поворот относительно осей X и Y.
 
-[task3-demo.webm](https://github.com/SolarHors/leti-cg/assets/34160814/12ba023e-78b2-498e-989b-0bcd419e7865)
+[task3-demo.webm](https://github.com/SolarHors/leti-cg/assets/34160814/61bad9b2-8c24-40de-93b4-884d3af0c311)
 
 ## Работа 4.
 
