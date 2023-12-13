@@ -1,5 +1,5 @@
 //! Лабораторная работа №3
-//! Вариант №2
+//! Вариант №1
 //! Группа 0323
 
 use common::*;
@@ -96,19 +96,19 @@ fn make_bilinear_surface(pts: &Vec<Vector2<f32>>) -> Matrix6<Vector2<f32>> {
 
             // Apply bilinear surface equation
             // (for surfaces described by four points)
-            // let surf = pts[0] * ((1. - u) * (1. - w))
-            //     + pts[1] * ((1. - u) * w)
-            //     + pts[2] * (u * (1. - w))
-            //     + pts[3] * (u * w);
+            let surf = pts[0] * ((1. - u) * (1. - w))
+                + pts[1] * ((1. - u) * w)
+                + pts[2] * (u * (1. - w))
+                + pts[3] * (u * w);
 
             // Apply bilinear surface equation
             // (for surfaces described by two line segments)
-            let line1: Point2<f32> =
-                Point2::from(pts[0]).lerp(&Point2::from(pts[1]), u);
-            let line2: Point2<f32> =
-                Point2::from(pts[2]).lerp(&Point2::from(pts[3]), u);
-            let surf: Vector2<f32> = Vector2::new(line1.x, line1.y) * (1. - w)
-                + Vector2::new(line2.x, line2.y) * w;
+            // let line1: Point2<f32> =
+            //     Point2::from(pts[0]).lerp(&Point2::from(pts[1]), u);
+            // let line2: Point2<f32> =
+            //     Point2::from(pts[2]).lerp(&Point2::from(pts[3]), u);
+            // let surf: Vector2<f32> = Vector2::new(line1.x, line1.y) * (1. - w)
+            //     + Vector2::new(line2.x, line2.y) * w;
 
             result[(i, j)] = surf;
         }
@@ -163,15 +163,14 @@ fn main() {
     let mut cursor_pos: Point2<f32> = Point2::new(0., 0.);
 
     // Central position
-    let center_pos: Point2<f32> = Point2::new(400., 300.);
+    let mut center_pos: Point2<f32> = Point2::new(400., 300.);
 
     // Which axis is being modified
     let mut modified_axis: ModifiedAxis = ModifiedAxis::X;
 
     // Points for the surface
     // Each point is a column of 4 values:
-    //    X, Y, Z, and whatever the last one is,
-    //    its just 1.0 by default
+    //    X, Y, Z, and 1
     let mut surf_points: Vec<Matrix4x1<f32>> = Vec::new();
 
     // Rotation angles of the surface: X, Y, Z
@@ -186,7 +185,7 @@ fn main() {
     let event_loop = EventLoop::new();
 
     let window_builder = WindowBuilder::new()
-        .with_title("CG Lab3-Task2")
+        .with_title("CG Lab3-Task1")
         .with_inner_size(LogicalSize::new(800., 600.))
         .with_resizable(true);
 
@@ -208,6 +207,11 @@ fn main() {
                         NonZeroU32::new(size.height).unwrap(),
                     )
                     .unwrap();
+
+                center_pos = Point2::new(
+                    size.width as f32 / 2.,
+                    size.height as f32 / 2.,
+                );
 
                 let mut buffer = surface.buffer_mut().unwrap();
 
@@ -244,14 +248,6 @@ fn main() {
                         &mut buffer,
                         &size,
                         &surf_fill_points,
-                    );
-                } else if converted_proj_pts.len() >= 2 {
-                    draw_line(
-                        &mut buffer,
-                        &size,
-                        &converted_proj_pts[0],
-                        &converted_proj_pts[1],
-                        &BLACK,
                     );
                 }
 
